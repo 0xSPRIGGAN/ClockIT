@@ -22,14 +22,28 @@ Module Program
     Sub Main()
 
         Dim WDM As New WebDriverManager.DriverManager()
-        WDM.SetUpDriver(New EdgeConfig())
+
+        ' 107.0.1418.28 does not yet exist at https://msedgedriver.azureedge.net (at the time of writing this).
+        ' This causes a 404 error when trying to GET req the server for that version,
+        ' so we  manually choose 107.0.1418.26 for the time being.
+        Try
+            WDM.SetUpDriver(New EdgeConfig(), "107.0.1418.26")
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+        End Try
+
+        ClockIN()
+
+    End Sub
+
+    Sub ClockIN()
 
         Dim driver As New EdgeDriver()
         Dim inputUserId, inputPin, loginButton As IWebElement ' These may change if the id value of these elements change
-        Dim userId As String = "123456"
-        Dim pin As String = "123456"
+        Dim userId As String = "12345"
+        Dim pin As String = "654321"
         Dim url As String = "https://time.frontlineeducation.com/clock"
-        Dim timeBetweenInput As Integer = 2000
+        Dim timeBetweenInput As Integer = 5000
 
         driver.Navigate().GoToUrl(url)
 
@@ -47,4 +61,5 @@ Module Program
         driver.Quit()
 
     End Sub
+
 End Module
